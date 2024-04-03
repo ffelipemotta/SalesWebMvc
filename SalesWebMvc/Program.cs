@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SalesWebMvc.Data;
 using SalesWebMvc.Models;
-using System.Configuration;
-using System.Data.SqlTypes;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SalesWebMvcContext");
 
@@ -10,26 +11,33 @@ builder.Services.AddDbContext<SalesWebMvcContext>(options =>
 {
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 36)));
 });
-        
 
-// Add services to the container.
+builder.Services.AddScoped<SeedingService>();
+
+// Adicionando serviço de autorização
+builder.Services.AddAuthorization();
+
+// Adicionando serviço de controllers
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure o pipeline de solicitação HTTP.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+
+    // Semear dados apenas se não estiver no ambiente de desenvolvimento
+   
+}
+{
+    app.Services.CreateScope().ServiceProvider.GetRequiredService<SeedingService>().Seed();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
