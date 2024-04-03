@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SalesWebMvc.Data;
 using SalesWebMvc.Models;
 using System;
+using SalesWebMvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("SalesWebMvcContext");
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<SalesWebMvcContext>(options =>
 });
 
 builder.Services.AddScoped<SeedingService>();
+builder.Services.AddScoped<SellerService>();
 
 // Adicionando serviço de autorização
 builder.Services.AddAuthorization();
