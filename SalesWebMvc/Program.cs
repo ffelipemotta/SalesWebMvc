@@ -15,6 +15,7 @@ builder.Services.AddDbContext<SalesWebMvcContext>(options =>
 
 builder.Services.AddScoped<SeedingService>();
 builder.Services.AddScoped<SellerService>();
+builder.Services.AddScoped<DepartmentService>();
 
 // Adicionando serviço de autorização
 builder.Services.AddAuthorization();
